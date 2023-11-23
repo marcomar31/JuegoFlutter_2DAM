@@ -5,15 +5,16 @@ class EmberPlayer extends SpriteAnimationComponent
     with HasGameRef<MyGame> {
   EmberPlayer({
     required super.position,
-  }) : super(size: Vector2.all(64), anchor: Anchor.center);
+  }) : super(size: Vector2(170, 300), anchor: Anchor.center);
 
   @override
   void onLoad() {
     animation = SpriteAnimation.fromFrameData(
-      game.images.fromCache('ember.png'),
+      game.images.fromCache('reading.png'),
       SpriteAnimationData.sequenced(
-        amount: 4,
-        textureSize: Vector2.all(16),
+        amount: 15,
+        amountPerRow: 5,
+        textureSize: Vector2(60, 88),
         stepTime: 0.12,
       ),
     );
