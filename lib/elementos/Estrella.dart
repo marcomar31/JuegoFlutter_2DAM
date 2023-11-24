@@ -8,7 +8,6 @@ class Estrella extends SpriteComponent with HasGameRef<MyGame>{
 
   @override
   Future<void> onLoad() async {
-    // TODO: implement onLoad
     sprite=Sprite(game.images.fromCache('star.png'));
     anchor=Anchor.center;
     return super.onLoad();

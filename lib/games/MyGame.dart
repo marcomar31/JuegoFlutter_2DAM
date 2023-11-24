@@ -1,27 +1,22 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 
-import '../players/EmberPlayer.dart';
 import '../elementos/Estrella.dart';
+import '../elementos/Gota.dart';
+import '../players/EmberPlayer.dart';
 
-class MyGame extends FlameGame {
-  MyGame();
+class MyGame extends FlameGame with HasKeyboardHandlerComponents {
 
-  late EmberPlayer _ember;
-  double objectSpeed = 0.0;
-
-  @override
   final world = World();
   late final CameraComponent cameraComponent;
+  late EmberPlayer _ember;
   late TiledComponent mapComponent;
 
-  @override
-  Color backgroundColor() {
-    return const Color.fromARGB(255, 173, 223, 247);
-  }
+
 
   @override
   Future<void> onLoad() async {
@@ -32,32 +27,43 @@ class MyGame extends FlameGame {
       'star.png',
       'water_enemy.png',
       'reading.png',
-      //'nature-platformer-tileset-16x16.png'
     ]);
 
     cameraComponent = CameraComponent(world: world);
-    cameraComponent.viewfinder.anchor = Anchor.topLeft;
-    addAll([cameraComponent, world]);
+    cameraComponent.viewfinder.anchor = Anchor.center; // Anclaje al centro
+    addAll([cameraComponent, world]); // Agrega primero la cámara al juego y luego el mundo
 
-    mapComponent = await TiledComponent.load('mapa.tmx', Vector2.all(16));
+    mapComponent = await TiledComponent.load('mapa2.tmx', Vector2.all(32));
     world.add(mapComponent);
 
-    /*
     ObjectGroup? estrellas = mapComponent.tileMap.getLayer<ObjectGroup>("estrellas");
 
     for (final estrella in estrellas!.objects) {
-      Estrella spriteEstrella = Estrella(position: Vector2(estrella.x, estrella.y),
+      Estrella spriteStar = Estrella(
+          position: Vector2(estrella.x, estrella.y),
           size: Vector2.all(64));
-      add(spriteEstrella);
+      world.add(spriteStar); // Agrega las estrellas al mundo
     }
-    */
+
+    ObjectGroup? gotas=mapComponent.tileMap.getLayer<ObjectGroup>("gotas");
+
+    for(final gota in gotas!.objects){
+      Gota spriteGota = Gota(
+          position: Vector2(gota.x,gota.y),
+          size: Vector2.all(64));
+      world.add(spriteGota); // Agrega las gotas al mundo
+    }
 
     _ember = EmberPlayer(
-      position: Vector2(128, canvasSize.y - 300),
+      position: Vector2(canvasSize.x / 2, canvasSize.y / 2),
     );
-
     world.add(_ember);
 
+    cameraComponent.follow(_ember);
+  }
 
+  @override
+  Color backgroundColor() {
+    return const Color.fromARGB(255, 173, 223, 247);
   }
 }
